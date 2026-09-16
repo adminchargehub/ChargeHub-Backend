@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: chargehub-db
+    environment:
+      POSTGRES_USER: chargehub
+      POSTGRES_PASSWORD: chargehub
+      POSTGRES_DB: chargehub
+    ports:
+      # Host 55432 — this machine already has 5432 (falcon-postgres container)
+      # and 5433 (a native Windows Postgres) in use. Container port unchanged.
+      - "55432:5432"
+    volumes:
+      - chargehub_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chargehub -d chargehub"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  chargehub_pgdata:
